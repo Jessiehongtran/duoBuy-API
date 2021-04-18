@@ -73,6 +73,7 @@ const getCodeForACobuyer = (userId, productId) => {
             .first()
 }
 
+
 module.exports = {
     getProducts,
     addProduct,

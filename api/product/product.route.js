@@ -19,17 +19,8 @@ route.post('/', async (req, res) => {
     const newProduct = req.body
     const groupUnique = uuid()
     const hostPass = groupUnique.slice(0,4)
-    let groupPass
-    if (newProduct.cobuyers_total && newProduct.cobuyers_total > 0){
-        groupPass = groupUnique.slice(0, 4+ newProduct.cobuyers_total*2)
-    } else {
-        groupPass = groupUnique.slice(0, 4)
-    }
     bcrypt.hash(hostPass, saltRounds, function(err, hash){
         newProduct.host_code = hash
-    })
-    bcrypt.hash(groupPass, saltRounds, function(err, hash){
-        newProduct.group_code = hash
     })
     try {
         const newProductId = await productModel.addProduct(newProduct)
@@ -65,6 +56,9 @@ route.delete('/:productId', async (req, res) => {
 //ADD a cobuyer of a product
 route.post('/cobuyer', async (req, res) => {
     const newCobuyer = req.body
+    bcrypt.hash(newCobuyer.member_code, saltRounds, function(err, hash){
+        newCobuyer.member_code = hash
+    })
     try {
         const response = await productModel.addCobuyer(newCobuyer)
         res.status(200).json(response)
@@ -113,6 +107,40 @@ route.get('/:productId', async (req, res) => {
     try {
         const product = await productModel.getProductById(productId)
         res.status(200).json(product)
+    } catch (err){
+        res.status(500).json(err.message)
+    }
+})
+
+function isSame(sentCode, encryptedCode){
+    bcrypt.compare(sentCode, encryptedCode, (err, res) => {
+        console.log(err,res)
+        return res
+    })
+}
+
+//Compare group code with individual codes
+route.post('/:productId/code/compare', async (req, res) => {
+    const memberCodes = req.body
+    const productId = req.params.productId
+    let countSame = 0
+    try {
+        const storedCodes = await productModel.getCobuyers(productId)
+        if (storedCodes.length > 0){
+            for (let i = 0; i < storedCodes.length; i++){
+                for (let j = 0; j < storedCodes.length; j++){
+                    if (isSame(storedCodes[i], memberCodes[j])){
+                        countSame += 1
+                    }
+                }
+            }
+        }
+
+        if (countSame == storedCodes.length){
+            res.status(200).json({ validated: true})
+        } else {
+            res.status(200).json({ validated: false})
+        }
     } catch (err){
         res.status(500).json(err.message)
     }
