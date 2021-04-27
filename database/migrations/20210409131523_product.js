@@ -9,7 +9,6 @@ exports.up = function(knex) {
         tbl.integer('cobuyers_total')
         tbl.integer('actual_cobuyers')
         tbl.string('host_code').notNullable()
-        tbl.string('group_code').notNullable()
         tbl.integer('hostId')
            .unsigned()
            .notNullable()

@@ -22,6 +22,8 @@ route.post('/', async (req, res) => {
     bcrypt.hash(hostPass, saltRounds, function(err, hash){
         newProduct.host_code = hash
     })
+    //hash does not seem to work
+    console.log(newProduct)
     try {
         const newProductId = await productModel.addProduct(newProduct)
         res.status(200).json(newProductId)
