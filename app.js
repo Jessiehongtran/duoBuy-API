@@ -7,12 +7,18 @@ const bodyParser = require("body-parser");
 const userRoute = require('./api/user/user.route');
 const productRoute = require('./api/product/product.route');
 
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    next();
+  });
+
+
 const corsConfig = {
     origin: 'http://127.0.0.1:5500'
 }
 
 app.use(express.json());
-app.use(bodyParser.text({ type: "text/plain" }));
+// app.use(bodyParser.text({ type: "text/plain" }));
 app.use(cors(corsConfig))
 app.use('Hello world', (req, res) => {
 
