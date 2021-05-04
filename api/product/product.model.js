@@ -1,9 +1,21 @@
 const db = require('../../database/dbConfig');
 
 const getProducts = () => {
-    return db('product')
-            .join('productUser', 'product.id', 'productUser.productId')
-            .select('*')
+    return db('product as p')
+            .join('user as u', 'p.hostId','u.id' )
+            .select(
+                'p.id',
+                'p.product_name',
+                'p.product_image',
+                'p.product_price',
+                'p.current_price',
+                'p.cobuyers_total',
+                'p.actual_cobuyers',
+                'p.hostId',
+                'u.firstName as host_first_name',
+                'u.lastName as host_Last_name',
+                'u.email as host_email'
+            )
 }
 
 const addProduct = (product) => {
