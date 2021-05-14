@@ -12,6 +12,7 @@ const getProducts = () => {
                 'p.cobuyers_total',
                 'p.actual_cobuyers',
                 'p.hostId',
+                'p.achieved',
                 'u.firstName as host_first_name',
                 'u.lastName as host_Last_name',
                 'u.email as host_email'

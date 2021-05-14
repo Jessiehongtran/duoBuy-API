@@ -15,6 +15,7 @@ exports.up = function(knex) {
            .references('user.id')
            .onDelete('CASCADE')
            .onUpdate('CASCADE')
+        tbl.boolean('achieved')
     })
   };
   
